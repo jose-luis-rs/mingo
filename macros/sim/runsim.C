@@ -34,13 +34,13 @@ void runsim(int nbevents = 1)
     gSystem->Setenv("CONFIG_DIR", workDirectory + "/gconfig");
 
     // Output files
-    const TString simufile = "sim0.8.root";
+    const TString simufile = "sim.root";
     const TString parfile = "par.root";
 
     // Basic simulation setup
     auto run = new FairRunSim();
     run->SetName("TGeant4");
-    run->SetStoreTraj(false);
+    run->SetStoreTraj(0);
     run->SetMaterials("media_r3b.geo");
     run->SetSink(new FairRootFileSink(simufile));
     
@@ -53,18 +53,21 @@ void runsim(int nbevents = 1)
     run->AddModule(cave);
 
     // Geometry:
-    run->AddModule(new Mingo("mingo_v2023.3.geo.root",{0.,0.,0.}));
+    //run->AddModule(new Mingo("mingo_v2023.sinPb.geo.root",{0.,0.,0.}));// without Pb
+    //run->AddModule(new Mingo("mingo_v2023.1.geo.root",{0.,0.,0.}));// configuration 1
+    run->AddModule(new Mingo("mingo_v2023.3.geo.root",{0.,0.,0.}));// configuration 2
+    //run->AddModule(new Mingo("mingo_v2023.07.81.104.geo.root",{0.,0.,0.}));// Setup 81,81,104 Pb
     
     
-  // -----   Create PrimaryGenerator   --------------------------------------
-  FairPrimaryGenerator *primGen = new FairPrimaryGenerator();
+    // -----   Create PrimaryGenerator   --------------------------------------
+    FairPrimaryGenerator *primGen = new FairPrimaryGenerator();
 
     // Primary particle generator
     Int_t pdgId = 11;       // electron beam
     Int_t mult = 1;
     Double32_t theta1 = 0.; // polar angle range
     Double32_t theta2 = 0.;
-    Double32_t momentum = 0.8;
+    Double32_t momentum = 0.3;
     auto boxGen = new FairBoxGenerator(pdgId, mult);
     boxGen->SetThetaRange(theta1, theta2);
     boxGen->SetPRange(momentum, momentum);
